@@ -168,6 +168,27 @@ const quizQuestions = [
   }
 ];
 
+const quizMilestones = [
+  "Missão travada",
+  "Entrada liberada",
+  "Leitura em andamento",
+  "Padrões aparecendo",
+  "Raiz ficando clara",
+  "Virada emocional chegando",
+  "Últimos ajustes",
+  "Mapa completo"
+];
+
+const quizEnergyLevels = [
+  "Energia de clareza: aguardando liberação",
+  "Energia de clareza: aquecendo",
+  "Energia de clareza: em leitura",
+  "Energia de clareza: ganhando profundidade",
+  "Energia de clareza: atravessando a raiz",
+  "Energia de clareza: quase completa",
+  "Energia de clareza: visão total"
+];
+
 const resultProfiles = [
   {
     id: "healthy-potential",
@@ -256,6 +277,9 @@ function init() {
     quizProgressBar: document.getElementById("quizProgressBar"),
     quizStepLabel: document.getElementById("quizStepLabel"),
     quizProgressPercent: document.getElementById("quizProgressPercent"),
+    quizEnergyLabel: document.getElementById("quizEnergyLabel"),
+    quizMilestone: document.getElementById("quizMilestone"),
+    quizBadges: document.getElementById("quizBadges"),
     quizLocked: document.getElementById("quizLocked"),
     quizFlow: document.getElementById("quizFlow"),
     quizQuestion: document.getElementById("quizQuestion"),
@@ -263,6 +287,7 @@ function init() {
     quizBackButton: document.getElementById("quizBackButton"),
     quizComplete: document.getElementById("quizComplete"),
     resetQuizButton: document.getElementById("resetQuizButton"),
+    quizReward: document.getElementById("quizReward"),
     resultSection: document.getElementById("result"),
     resultCard: document.getElementById("resultCard"),
     resultSide: document.getElementById("resultSide")
@@ -413,6 +438,7 @@ function renderQuizState() {
     elements.quizComplete.classList.remove("is-hidden");
     elements.quizStatus.textContent = "Diagnóstico concluído. Seu resultado já está liberado abaixo.";
     updateQuizProgress(quizQuestions.length, true, true);
+    updateQuizReward();
     return;
   }
 
@@ -541,12 +567,14 @@ function renderResultState() {
   const score = state.quiz.result.totalScore;
   const shareMessage = buildResultShareMessage(profile, primaryNeed);
   const shareUrl = buildWhatsappShareUrl(shareMessage);
+  const rewardBadge = getRewardBadge(profile, score);
 
   elements.resultSection.classList.remove("is-hidden");
   elements.resultCard.className = `result-card result-card--${profile.tone || "attention"}`;
   elements.resultSide.className = `result-side result-side--${profile.tone || "attention"}`;
   elements.resultCard.innerHTML = `
     <span class="result-card__eyebrow">Resultado liberado${firstName ? ` para ${firstName}` : ""}</span>
+    <div class="result-card__badge">${rewardBadge}</div>
     <h3>${profile.title}</h3>
     <p>${profile.description}</p>
     <div class="result-card__metric">
@@ -610,6 +638,70 @@ function updateQuizProgress(questionIndex, complete = false, unlocked = false) {
   elements.quizProgressBar.style.width = `${progressPercent}%`;
   elements.quizProgressPercent.textContent = `${progressPercent}%`;
   elements.quizStepLabel.textContent = `Pergunta ${visibleStep} de ${totalQuestions}`;
+  updateGameboardState(visibleStep, complete, unlocked);
+}
+
+function updateGameboardState(visibleStep, complete, unlocked) {
+  const answeredCount = Math.min(Math.max(visibleStep - 1, 0), quizQuestions.length);
+  const energyIndex = complete
+    ? quizEnergyLevels.length - 1
+    : Math.min(answeredCount, quizEnergyLevels.length - 2);
+  const milestoneIndex = complete
+    ? quizMilestones.length - 1
+    : Math.min(visibleStep, quizMilestones.length - 2);
+
+  if (elements.quizEnergyLabel) {
+    elements.quizEnergyLabel.textContent = unlocked
+      ? quizEnergyLevels[energyIndex]
+      : quizEnergyLevels[0];
+  }
+
+  if (elements.quizMilestone) {
+    elements.quizMilestone.textContent = unlocked
+      ? quizMilestones[milestoneIndex]
+      : quizMilestones[0];
+  }
+
+  if (!elements.quizBadges) {
+    return;
+  }
+
+  const badgeUnlocks = unlocked
+    ? [answeredCount >= 1, answeredCount >= 4, complete || answeredCount >= quizQuestions.length]
+    : [false, false, false];
+
+  Array.from(elements.quizBadges.children).forEach((badge, index) => {
+    badge.classList.toggle("is-earned", Boolean(badgeUnlocks[index]));
+  });
+}
+
+function updateQuizReward() {
+  if (!elements.quizReward || !state.quiz.result) {
+    return;
+  }
+
+  const profile = getResultProfile(state.quiz.result.totalScore);
+  elements.quizReward.textContent = `Selo desbloqueado: ${getRewardBadge(profile, state.quiz.result.totalScore)}`;
+}
+
+function getRewardBadge(profile, score) {
+  if (profile.tone === "healthy") {
+    return "Base saudável com espaço para evoluir";
+  }
+
+  if (profile.tone === "attention") {
+    return "Vínculo vivo, mas pedindo ajuste consciente";
+  }
+
+  if (profile.tone === "warning") {
+    return "Hora da virada antes do desgaste crescer";
+  }
+
+  if (score >= 10) {
+    return "Reconstrução necessária para sair do automático";
+  }
+
+  return "Leitura concluída com coragem e clareza";
 }
 
 function getResultProfile(score) {
