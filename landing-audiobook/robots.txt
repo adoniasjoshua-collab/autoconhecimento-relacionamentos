@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://adoniasjoshua-collab.github.io/autoconhecimento-relacionamentos/sitemap.xml
