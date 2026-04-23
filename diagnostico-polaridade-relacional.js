@@ -5,22 +5,22 @@ const optionScale = [
   {
     label: "Quase nunca",
     value: 0,
-    hint: "Isso raramente aparece no seu momento atual."
+    hint: "Raramente aparece no seu momento atual."
   },
   {
     label: "Às vezes",
     value: 1,
-    hint: "Esse sinal aparece, mas ainda não domina a dinâmica."
+    hint: "Aparece, mas ainda não domina a dinâmica."
   },
   {
     label: "Com frequência",
     value: 2,
-    hint: "Esse padrão já influencia sua forma de sentir e reagir."
+    hint: "Já influencia sua forma de sentir e reagir."
   },
   {
     label: "Quase sempre",
     value: 3,
-    hint: "Esse é um traço bem presente na sua energia relacional hoje."
+    hint: "É um traço bem presente na sua energia relacional."
   }
 ];
 
@@ -469,15 +469,15 @@ function renderResult(result) {
   elements.resultPolarity.textContent = result.polarity;
   elements.resultAttention.textContent = attentionMap[result.attention];
   elements.resultGuidance.textContent = guidanceMap[result.attention];
-  elements.resultHeading.textContent = "O padrão mais presente no seu momento atual aponta uma direção importante.";
+  elements.resultHeading.textContent = `Seu resultado aponta ${energyLabels[result.energy].toLowerCase()} no momento atual.`;
   elements.resultLead.textContent =
-    `Sua leitura sugere ${energyLabels[result.energy].toLowerCase()}, ${result.balance.toLowerCase()} e ${result.polarity.toLowerCase()} na dinâmica relacional atual.`;
-  elements.microStatus.textContent = "Leitura concluída. Seu resultado gratuito já está liberado abaixo.";
+    `Hoje a leitura sugere ${result.polarity.toLowerCase()} e ${result.balance.toLowerCase()} entre firmeza, entrega e presença relacional.`;
+  elements.microStatus.textContent = "Leitura concluída. Seu resultado gratuito já está liberado.";
 }
 
 function updateHeaderContent(stageId) {
   const stage = stageContent.find((item) => item.id === stageId) || stageContent[0];
-  elements.stageLabel.textContent = stage.label;
+  elements.stageLabel.textContent = `Etapa ${stage.id} • ${stage.label}`;
   elements.stageTitle.textContent = stage.title;
   elements.stageDescription.textContent = stage.description;
 
@@ -494,7 +494,13 @@ function updateProgress(isComplete = false) {
   const visibleCount = isComplete ? total : answered;
   const percentage = isComplete ? 100 : Math.round((visibleCount / total) * 100);
 
-  elements.stepCounter.textContent = `${visibleCount} de ${total}`;
+  if (!state.started) {
+    elements.stepCounter.textContent = `${total} perguntas`;
+  } else if (isComplete) {
+    elements.stepCounter.textContent = `${total} de ${total}`;
+  } else {
+    elements.stepCounter.textContent = `Pergunta ${state.currentIndex + 1} de ${total}`;
+  }
   elements.progressPercent.textContent = `${percentage}%`;
   elements.progressBar.style.width = `${percentage}%`;
 }
