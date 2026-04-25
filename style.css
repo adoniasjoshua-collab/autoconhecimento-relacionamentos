@@ -293,9 +293,125 @@ h3,
   margin: 28px 0 24px;
 }
 
+.hero__choice-card {
+  gap: 16px;
+  border-color: rgba(241, 180, 91, 0.22);
+  background:
+    radial-gradient(circle at top right, rgba(241, 180, 91, 0.15), transparent 36%),
+    radial-gradient(circle at bottom left, rgba(255, 142, 67, 0.1), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.018) 100%),
+    var(--surface);
+}
+
+.choice-card__header {
+  display: grid;
+  gap: 6px;
+}
+
+.choice-card__label {
+  width: fit-content;
+  padding: 7px 10px;
+  border: 1px solid rgba(241, 180, 91, 0.2);
+  border-radius: 999px;
+  background: rgba(241, 180, 91, 0.08);
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.choice-card__header strong {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: clamp(1.35rem, 5vw, 1.85rem);
+  line-height: 1.12;
+}
+
+.choice-card__header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.choice-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.choice-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 78px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035);
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.choice-step:hover {
+  transform: translateY(-2px);
+  border-color: rgba(241, 180, 91, 0.28);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.choice-step--primary {
+  border-color: rgba(241, 180, 91, 0.38);
+  background: linear-gradient(135deg, rgba(241, 180, 91, 0.16), rgba(255, 142, 67, 0.08));
+}
+
+.choice-step__number {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  color: #21140d;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.choice-step__text {
+  display: grid;
+  gap: 3px;
+}
+
+.choice-step__text strong {
+  line-height: 1.2;
+}
+
+.choice-step__text small {
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.choice-step::after {
+  content: "→";
+  color: var(--accent);
+  font-weight: 900;
+}
+
 .price-stack {
   display: grid;
   gap: 6px;
+}
+
+.price-stack--compact {
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 6px 10px;
+  padding-top: 2px;
+}
+
+.price-stack--compact .price-stack__value {
+  font-size: 1.55rem;
+}
+
+.price-stack--compact .price-stack__note {
+  grid-column: 1 / -1;
 }
 
 .price-stack__label,
@@ -957,6 +1073,15 @@ body[data-checkout-ready="false"] [data-checkout-button] {
     grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
     align-items: center;
     gap: 42px;
+  }
+
+  .hero__choice-card {
+    max-width: 560px;
+  }
+
+  .choice-step {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding: 14px;
   }
 
   .pain-grid {
