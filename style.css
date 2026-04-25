@@ -289,7 +289,7 @@ h3,
 .hero__price-card {
   display: grid;
   gap: 18px;
-  padding: 22px;
+  padding: 24px;
   margin: 28px 0 24px;
 }
 
@@ -323,7 +323,7 @@ h3,
 
 .choice-card__header strong {
   font-family: "Georgia", "Times New Roman", serif;
-  font-size: clamp(1.35rem, 5vw, 1.85rem);
+  font-size: clamp(1.55rem, 6vw, 2rem);
   line-height: 1.12;
 }
 
@@ -335,18 +335,18 @@ h3,
 
 .choice-stack {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .choice-step {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px;
-  min-height: 78px;
-  padding: 12px;
+  gap: 14px;
+  min-height: 92px;
+  padding: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
+  border-radius: 20px;
   background: rgba(255, 255, 255, 0.035);
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
@@ -359,18 +359,21 @@ h3,
 
 .choice-step--primary {
   border-color: rgba(241, 180, 91, 0.38);
-  background: linear-gradient(135deg, rgba(241, 180, 91, 0.16), rgba(255, 142, 67, 0.08));
+  background:
+    radial-gradient(circle at top right, rgba(255, 142, 67, 0.16), transparent 34%),
+    linear-gradient(135deg, rgba(241, 180, 91, 0.2), rgba(255, 142, 67, 0.1));
+  box-shadow: 0 18px 34px rgba(255, 142, 67, 0.16);
 }
 
 .choice-step__number {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
   color: #21140d;
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
-  font-size: 0.86rem;
+  font-size: 0.92rem;
   font-weight: 900;
 }
 
@@ -380,17 +383,20 @@ h3,
 }
 
 .choice-step__text strong {
+  font-size: 1.02rem;
   line-height: 1.2;
 }
 
 .choice-step__text small {
   color: var(--muted);
+  font-size: 0.9rem;
   line-height: 1.35;
 }
 
 .choice-step::after {
   content: "→";
   color: var(--accent);
+  font-size: 1.25rem;
   font-weight: 900;
 }
 
