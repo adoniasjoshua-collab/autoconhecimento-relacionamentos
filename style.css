@@ -743,6 +743,14 @@ h3,
   padding: 24px;
 }
 
+.start-card--premium {
+  border-color: rgba(255, 142, 67, 0.24);
+  background:
+    radial-gradient(circle at top right, rgba(255, 142, 67, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.052) 0%, rgba(255, 255, 255, 0.018) 100%),
+    var(--surface);
+}
+
 .start-card .method-card__number,
 .trail-step__number {
   display: inline-grid;
