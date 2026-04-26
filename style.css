@@ -345,6 +345,34 @@ h3,
   font-size: 0.94rem;
 }
 
+.journey-meter {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(8, 6, 5, 0.28);
+}
+
+.journey-meter__item {
+  display: grid;
+  place-items: center;
+  min-height: 34px;
+  padding: 7px 8px;
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.journey-meter__item.is-active {
+  color: var(--text);
+  background: linear-gradient(135deg, rgba(241, 180, 91, 0.18), rgba(255, 142, 67, 0.08));
+}
+
 .choice-stack {
   display: grid;
   gap: 12px;
@@ -360,13 +388,15 @@ h3,
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.035);
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.12);
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 }
 
 .choice-step:hover {
-  transform: translateY(-2px);
-  border-color: rgba(241, 180, 91, 0.28);
-  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-3px);
+  border-color: rgba(241, 180, 91, 0.36);
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 20px 36px rgba(0, 0, 0, 0.2);
 }
 
 .choice-step--primary {
@@ -403,6 +433,32 @@ h3,
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.35;
+}
+
+.choice-step__badges,
+.mission-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 5px;
+}
+
+.choice-step__badges em,
+.mission-badges span,
+.mission-label {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 26px;
+  padding: 5px 8px;
+  border: 1px solid rgba(241, 180, 91, 0.16);
+  border-radius: 999px;
+  background: rgba(241, 180, 91, 0.075);
+  color: #ecd0ad;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .choice-step::after {
@@ -737,10 +793,52 @@ h3,
 }
 
 .start-card {
+  position: relative;
   display: grid;
   align-content: start;
   gap: 14px;
   padding: 24px;
+  overflow: hidden;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.start-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(241, 180, 91, 0.1), transparent 32%),
+    radial-gradient(circle at 86% 18%, rgba(255, 142, 67, 0.12), transparent 26%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.start-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(241, 180, 91, 0.28);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%),
+    var(--surface);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.38);
+}
+
+.start-card:hover::before {
+  opacity: 1;
+}
+
+.start-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.start-card__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .start-card--premium {
@@ -763,6 +861,18 @@ h3,
   font-weight: 800;
 }
 
+.start-card .method-card__number {
+  margin-bottom: 0;
+}
+
+.mission-label {
+  justify-content: center;
+  color: var(--accent);
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 .start-card--featured {
   border-color: rgba(241, 180, 91, 0.28);
   background:
@@ -772,7 +882,7 @@ h3,
 }
 
 .start-card .btn {
-  margin-top: 4px;
+  margin-top: auto;
 }
 
 .journey-trail {
