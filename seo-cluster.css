@@ -405,6 +405,48 @@ p {
   margin-top: 18px;
 }
 
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.breadcrumb a {
+  color: rgba(255, 247, 237, 0.88);
+  text-decoration: underline;
+  text-decoration-color: rgba(239, 191, 116, 0.42);
+  text-underline-offset: 4px;
+}
+
+.faq-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.faq-list details {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.035);
+  overflow: hidden;
+}
+
+.faq-list summary {
+  cursor: pointer;
+  padding: 16px 18px;
+  color: var(--text);
+  font-weight: 800;
+}
+
+.faq-list details p {
+  margin: 0;
+  padding: 0 18px 18px;
+}
+
 .footer {
   padding: 26px 0 40px;
   color: var(--muted);
