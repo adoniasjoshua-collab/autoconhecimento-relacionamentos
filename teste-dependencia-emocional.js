@@ -82,6 +82,44 @@ const questions = [
   }
 ];
 
+const dimensionMeta = {
+  Medo: {
+    label: "Medo de abandono",
+    cost: "Quando o medo assume a direção, qualquer demora, silêncio ou conflito parece ameaça de perda.",
+    focus: "regular ansiedade antes de buscar confirmação externa"
+  },
+  Limites: {
+    label: "Limites e identidade",
+    cost: "Quando limite vira culpa, a pessoa preserva o vínculo no curto prazo e perde espaço interno aos poucos.",
+    focus: "recuperar voz, rotina e escolhas próprias"
+  },
+  Valor: {
+    label: "Valor pessoal",
+    cost: "Quando o valor depende da reação do outro, atenção vira termômetro de autoestima.",
+    focus: "separar afeto recebido de valor pessoal"
+  },
+  Virada: {
+    label: "Autonomia emocional",
+    cost: "Quando o centro está frágil, instabilidade afetiva parece ameaça à própria identidade.",
+    focus: "reconstruir chão interno e rede de apoio"
+  }
+};
+
+const recoveryPlan = {
+  low: [
+    "Escolha um pequeno ritual semanal para manter vida própria dentro do vínculo.",
+    "Use o resultado como prevenção: observe sinais antes que virem padrão."
+  ],
+  medium: [
+    "Nas próximas 24 horas, adie uma reação impulsiva e escreva o fato separado do medo.",
+    "Nesta semana, pratique um limite pequeno sem justificar demais sua existência."
+  ],
+  high: [
+    "Nas próximas 24 horas, procure uma pessoa confiável e não tome decisão no pico da ansiedade.",
+    "Nesta semana, reorganize rotina básica: sono, alimentação, trabalho, oração/reflexão e apoio emocional."
+  ]
+};
+
 const profiles = [
   {
     max: 3,
@@ -252,6 +290,10 @@ function renderResult() {
   const score = getScore();
   const profile = getProfile(score);
   const topTriggers = getTopTriggers();
+  const dimensions = getDimensionBreakdown();
+  const dominantDimension = dimensions[0];
+  const hiddenCost = getHiddenCost(dominantDimension);
+  const plan = getRecoveryPlan(profile.tone, dominantDimension);
   const shareMessage = encodeURIComponent(
     `Fiz o teste de dependência emocional e meu resultado foi: ${profile.title}. Pontuação: ${score}/${questions.length * 2}.`
   );
@@ -262,6 +304,14 @@ function renderResult() {
     <span class="pill">${profile.badge}</span>
     <h2 class="result-title">${profile.title}</h2>
     <p>${profile.description}</p>
+    <div class="diagnostic-note">
+      <strong>Padrão que mais pede atenção</strong>
+      <p>${dominantDimension.label}: foco em ${dominantDimension.focus}.</p>
+    </div>
+    <div class="diagnostic-note">
+      <strong>Custo oculto</strong>
+      <p>${hiddenCost}</p>
+    </div>
     <ul class="check-list">
       ${profile.actions.map((action) => `<li>${action}</li>`).join("")}
     </ul>
@@ -272,11 +322,32 @@ function renderResult() {
   `;
 
   nodes.resultSide.innerHTML = `
+    <h3>Mapa emocional</h3>
+    <div class="dimension-list">
+      ${dimensions.map((dimension) => `
+        <div class="dimension">
+          <div class="dimension__top">
+            <span>${dimension.label}</span>
+            <strong>${dimension.score}/${dimension.max}</strong>
+          </div>
+          <div class="dimension__bar" aria-hidden="true">
+            <span style="width: ${dimension.percent}%"></span>
+          </div>
+          <small>${dimension.focus}</small>
+        </div>
+      `).join("")}
+    </div>
     <h3>Seus gatilhos mais sensíveis</h3>
     <ul class="check-list">
       ${topTriggers.map((trigger) => `<li>${trigger}</li>`).join("")}
     </ul>
     <p>Use esse resultado como ponto de partida. Ele não substitui terapia, mas ajuda a nomear padrões e escolher o próximo passo com mais lucidez.</p>
+    <div class="diagnostic-note">
+      <strong>Plano de recuperação de centro</strong>
+      <ul class="check-list">
+        ${plan.map((item) => `<li>${item}</li>`).join("")}
+      </ul>
+    </div>
     <p><a class="btn btn--ghost btn--full" href="https://wa.me/?text=${shareMessage}" target="_blank" rel="noopener noreferrer">Compartilhar resultado no WhatsApp</a></p>
     <p><a class="btn btn--ghost btn--full" data-whatsapp-link href="${whatsappUrl}" target="_blank" rel="noopener noreferrer">Tirar dúvidas</a></p>
   `;
@@ -291,10 +362,55 @@ function getProfile(score) {
 }
 
 function getTopTriggers() {
-  return state.answers
+  const triggers = state.answers
     .map((answer, index) => ({ answer, question: questions[index] }))
     .filter((item) => item.answer?.score > 0)
     .sort((a, b) => b.answer.score - a.answer.score)
     .slice(0, 3)
     .map((item) => `${item.question.stage}: ${item.answer.text}`);
+
+  return triggers.length ? triggers : ["Sua base aparece preservada. O foco agora é prevenção, clareza e manutenção de limites saudáveis."];
+}
+
+function getDimensionBreakdown() {
+  const totals = questions.reduce((accumulator, question) => {
+    accumulator[question.stage] = accumulator[question.stage] || { score: 0, max: 0 };
+    accumulator[question.stage].max += 2;
+    return accumulator;
+  }, {});
+
+  state.answers.forEach((answer, index) => {
+    const stage = questions[index]?.stage;
+    if (!stage || !totals[stage]) return;
+    totals[stage].score += answer?.score || 0;
+  });
+
+  return Object.entries(totals)
+    .map(([stage, values]) => {
+      const meta = dimensionMeta[stage] || { label: stage, focus: "observar o padrão com honestidade", cost: "" };
+      return {
+        stage,
+        label: meta.label,
+        focus: meta.focus,
+        cost: meta.cost,
+        score: values.score,
+        max: values.max,
+        percent: Math.round((values.score / values.max) * 100)
+      };
+    })
+    .sort((a, b) => {
+      if (b.percent !== a.percent) return b.percent - a.percent;
+      return b.score - a.score;
+    });
+}
+
+function getHiddenCost(dimension) {
+  return dimension?.cost || "O custo oculto do padrão é tentar manter o vínculo sem perceber onde você está perdendo centro.";
+}
+
+function getRecoveryPlan(tone, dominantDimension) {
+  const basePlan = recoveryPlan[tone] || recoveryPlan.medium;
+  const dimensionAction = `Durante 7 dias, observe ${dominantDimension.label.toLowerCase()} e pratique: ${dominantDimension.focus}.`;
+
+  return [...basePlan, dimensionAction];
 }

@@ -517,6 +517,62 @@ p {
   font-size: clamp(1.8rem, 5vw, 2.8rem);
 }
 
+.diagnostic-note {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(255, 248, 239, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.diagnostic-note strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.diagnostic-note p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.dimension-list {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0 20px;
+}
+
+.dimension {
+  display: grid;
+  gap: 6px;
+}
+
+.dimension__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(255, 248, 239, 0.9);
+  font-size: 0.92rem;
+}
+
+.dimension__bar {
+  overflow: hidden;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dimension__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--gold), var(--rose));
+}
+
+.dimension small {
+  color: var(--muted);
+}
+
 .check-list {
   display: grid;
   gap: 10px;

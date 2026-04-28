@@ -1,4 +1,4 @@
-const STORAGE_KEY = "relationship_funnel_state_v2";
+const STORAGE_KEY = "relationship_funnel_state_v3";
 
 const relationshipNeeds = {
   certainty: {
@@ -165,8 +165,167 @@ const quizQuestions = [
       { label: "Demora um pouco, mas aos poucos a conexão volta.", score: 1 },
       { label: "O clima fica estranho por muito tempo e ninguém sabe bem como sair disso.", score: 2 }
     ]
+  },
+  {
+    id: "emotional_safety",
+    need: "certainty",
+    eyebrow: "Pergunta sobre segurança emocional",
+    question: "Quando alguém fica inseguro, com ciúme ou medo, a relação costuma...",
+    helper: "Observe se o casal acolhe a vulnerabilidade ou transforma tudo em defesa.",
+    options: [
+      { label: "Criar espaço para falar sem humilhação, ameaça ou deboche.", score: 0 },
+      { label: "Tentar acolher, mas cair em justificativas ou impaciência.", score: 1 },
+      { label: "Virar interrogatório, frieza, explosão ou silêncio punitivo.", score: 2 }
+    ]
+  },
+  {
+    id: "novelty_initiative",
+    need: "variety",
+    eyebrow: "Pergunta sobre iniciativa",
+    question: "Quando a rotina pesa, vocês costumam buscar novidade como?",
+    helper: "Novidade aqui pode ser simples: presença, convite, humor, passeio ou mudança de clima.",
+    options: [
+      { label: "Alguém propõe algo e o outro costuma entrar junto na tentativa.", score: 0 },
+      { label: "Até existe vontade, mas quase sempre fica para depois.", score: 1 },
+      { label: "Ninguém puxa nada e a relação segue no automático.", score: 2 }
+    ]
+  },
+  {
+    id: "respect_value",
+    need: "significance",
+    eyebrow: "Pergunta sobre valor pessoal",
+    question: "Em momentos de discordância, você se sente tratado(a) com valor?",
+    helper: "Não é sobre concordar em tudo. É sobre manter dignidade mesmo quando há conflito.",
+    options: [
+      { label: "Sim. Mesmo discordando, existe respeito e consideração.", score: 0 },
+      { label: "Depende do assunto; às vezes o tom machuca mais que o tema.", score: 1 },
+      { label: "Não muito. Eu me sinto diminuído(a), ignorado(a) ou atacado(a).", score: 2 }
+    ]
+  },
+  {
+    id: "repair_capacity",
+    need: "growth",
+    eyebrow: "Pergunta sobre reparação",
+    question: "Depois que alguém percebe que errou, o que geralmente acontece?",
+    helper: "A maturidade aparece menos na promessa e mais na reparação concreta.",
+    options: [
+      { label: "Há pedido de desculpas, ajuste real e esforço para não repetir.", score: 0 },
+      { label: "Há desculpa, mas a mudança ainda é instável.", score: 1 },
+      { label: "A pessoa se defende, minimiza ou repete como se nada tivesse acontecido.", score: 2 }
+    ]
+  },
+  {
+    id: "care_balance",
+    need: "contribution",
+    eyebrow: "Pergunta sobre reciprocidade",
+    question: "O cuidado prático na relação parece equilibrado?",
+    helper: "Pense em disponibilidade, tarefas, apoio emocional e pequenos gestos de consideração.",
+    options: [
+      { label: "Sim. Existe troca, parceria e vontade de aliviar a vida um do outro.", score: 0 },
+      { label: "Oscila. Um cuida mais em algumas fases e isso precisa ser conversado.", score: 1 },
+      { label: "Não. Parece que uma pessoa carrega muito mais do que a outra.", score: 2 }
+    ]
   }
 ];
+
+const questionInsights = {
+  communication: [
+    "A comunicação ainda funciona como ponte: vocês conseguem falar sem transformar todo assunto difícil em ameaça.",
+    "A comunicação tem abertura, mas perde força quando alguém se fecha, muda de assunto ou evita sustentar a conversa.",
+    "A comunicação virou ponto crítico: assuntos importantes estão sendo adiados até voltarem como acúmulo, ironia ou explosão."
+  ],
+  connection: [
+    "A conexão emocional ainda tem presença real no cotidiano.",
+    "A conexão aparece em alguns momentos, mas não está constante o bastante para sustentar segurança.",
+    "A conexão parece estar mais fraca que a convivência: vocês podem estar juntos, mas pouco encontrados por dentro."
+  ],
+  appreciation: [
+    "A admiração ainda aparece em atitudes e palavras.",
+    "A admiração existe, mas está coberta por cansaço, cobranças e pouca verbalização.",
+    "A necessidade de importância está gritando por reconhecimento: crítica está ocupando o lugar da valorização."
+  ],
+  attraction: [
+    "A rotina ainda tem respiro, leveza e espaço para clima afetivo.",
+    "A rotina está previsível demais e pode esfriar se ninguém trouxer intenção.",
+    "A relação está funcionando como agenda: muita tarefa, pouco encontro e pouca novidade emocional."
+  ],
+  growth: [
+    "Há capacidade de aprender com erro e ajustar a rota.",
+    "Há consciência, mas a prática ainda não sustenta a mudança por tempo suficiente.",
+    "O crescimento está travado porque o conflito muda de roupa, mas repete a mesma estrutura."
+  ],
+  contribution: [
+    "O cuidado prático ainda alimenta a sensação de parceria.",
+    "O cuidado existe, mas aparece de forma irregular e pode virar cobrança silenciosa.",
+    "A contribuição está em alerta: cada um defende o próprio cansaço e o vínculo recebe pouco cuidado concreto."
+  ],
+  reconnection: [
+    "Vocês têm caminho de volta depois da tensão, e isso protege o vínculo.",
+    "A reconexão acontece, mas demora e deixa resíduos emocionais pelo caminho.",
+    "O pós-conflito está pesado: o silêncio prolongado pode estar ensinando o casal a se afastar."
+  ],
+  emotional_safety: [
+    "A vulnerabilidade encontra espaço suficiente para virar conversa, não ameaça.",
+    "A segurança emocional oscila quando alguém tenta se explicar mais do que acolher.",
+    "A certeza está muito sensível: medo, ciúme ou insegurança podem virar controle, defesa ou punição."
+  ],
+  novelty_initiative: [
+    "Existe iniciativa para renovar o clima antes que a rotina endureça.",
+    "A vontade de novidade existe, mas está perdendo para adiamento e cansaço.",
+    "A variedade está baixa: sem iniciativa, a relação tende a parecer manutenção, não encontro."
+  ],
+  respect_value: [
+    "Mesmo no desacordo, a relação preserva valor e consideração.",
+    "A importância oscila quando o tom da conversa começa a ferir a dignidade.",
+    "A necessidade de ser visto e respeitado está ferida: o conflito pode estar virando diminuição pessoal."
+  ],
+  repair_capacity: [
+    "A reparação aparece em atitude, não só em desculpa.",
+    "Existe intenção de reparar, mas ainda falta consistência depois da conversa.",
+    "O crescimento está bloqueado por defesa, minimização ou repetição do mesmo erro."
+  ],
+  care_balance: [
+    "A contribuição tem reciprocidade e fortalece a sensação de time.",
+    "A contribuição precisa de ajuste antes que a diferença de esforço vire ressentimento.",
+    "A contribuição está desequilibrada: uma pessoa pode estar carregando peso demais sozinha."
+  ]
+};
+
+const needCostMap = {
+  certainty: "Quando a busca por segurança vira controle, o casal ganha previsibilidade por fora e perde paz por dentro.",
+  variety: "Quando a necessidade de novidade fica sem cuidado, a relação começa a procurar emoção na crise, na distância ou na irritação.",
+  significance: "Quando importância vira ferida, elogio parece pouco, crítica pesa muito e a pessoa passa a disputar valor em vez de construir vínculo.",
+  love: "Quando conexão falta, qualquer detalhe vira prova de abandono, desinteresse ou rejeição, mesmo quando ainda existe sentimento.",
+  growth: "Quando crescimento trava, o casal aprende a pedir desculpas sem mudar estrutura, e isso desgasta confiança.",
+  contribution: "Quando contribuição desequilibra, cuidado vira cobrança silenciosa e uma pessoa passa a sentir que ama carregando peso demais."
+};
+
+const needFocusPlan = {
+  certainty: [
+    "Escolha uma conversa evitada e transforme em pauta curta, com horário e objetivo definido.",
+    "Durante 7 dias, troque defesa automática por uma pergunta: 'o que você precisa sentir para se sentir seguro(a) comigo?'"
+  ],
+  variety: [
+    "Crie um momento simples fora do roteiro habitual, sem esperar motivação perfeita.",
+    "Durante 7 dias, faça um gesto pequeno de leveza: convite, humor, toque, elogio ou mudança de ambiente."
+  ],
+  significance: [
+    "Nomeie uma atitude real que você admira no outro e fale sem ironia, cobrança ou compensação.",
+    "Durante 7 dias, observe se você está pedindo valorização com clareza ou cobrando através de crítica."
+  ],
+  love: [
+    "Separe 20 minutos sem tela para presença real, sem resolver tudo de uma vez.",
+    "Durante 7 dias, pratique uma reconexão simples depois de tensão: aproximação, escuta e reparação curta."
+  ],
+  growth: [
+    "Escolha um comportamento repetido e defina um ajuste observável para esta semana.",
+    "Durante 7 dias, acompanhe se houve mudança prática, não apenas conversa bonita."
+  ],
+  contribution: [
+    "Faça um gesto concreto para aliviar a vida do outro sem transformar isso em crédito emocional.",
+    "Durante 7 dias, pergunte uma vez: 'o que eu posso fazer para deixar sua semana menos pesada?'"
+  ]
+};
 
 const quizMilestones = [
   "Missão travada",
@@ -192,7 +351,7 @@ const quizEnergyLevels = [
 const resultProfiles = [
   {
     id: "healthy-potential",
-    maxScore: 3,
+    maxScore: 5,
     tone: "healthy",
     title: "Relacionamento saudável com potencial",
     shareSummary: "Existe base, carinho e espaço para crescer com mais intenção.",
@@ -207,7 +366,7 @@ const resultProfiles = [
   },
   {
     id: "almost-there",
-    maxScore: 6,
+    maxScore: 10,
     tone: "attention",
     title: "Quase lá, mas precisa ajuste",
     shareSummary: "Tem sentimento e vínculo, mas alguns ajustes precisam acontecer antes que o desgaste cresça.",
@@ -222,7 +381,7 @@ const resultProfiles = [
   },
   {
     id: "misaligned",
-    maxScore: 10,
+    maxScore: 17,
     tone: "warning",
     title: "Conectados, mas desalinhados",
     shareSummary: "Há conexão, mas o casal está fora de ritmo em comunicação, rotina e cuidado.",
@@ -532,11 +691,15 @@ function completeQuiz() {
   const totalScore = answers.reduce((total, answer) => total + answer.score, 0);
   const profile = getResultProfile(totalScore);
   const primaryNeed = getPrimaryNeed(answers);
+  const secondaryNeed = getTopNeeds(answers, 2)[1] || primaryNeed;
+  const strongestInsight = getStrongestAnswerInsight(answers);
 
   state.quiz.result = {
     profileId: profile.id,
     totalScore,
     primaryNeed,
+    secondaryNeed,
+    strongestInsight,
     completedAt: new Date().toISOString()
   };
   state.quiz.currentQuestion = quizQuestions.length;
@@ -563,11 +726,17 @@ function renderResultState() {
   const primaryNeedKey = state.quiz.result.primaryNeed || getPrimaryNeed(state.quiz.answers);
   const primaryNeed = relationshipNeeds[primaryNeedKey] || relationshipNeeds.love;
   const topNeeds = getTopNeeds(state.quiz.answers, 2);
+  const secondaryNeedKey = state.quiz.result.secondaryNeed || topNeeds[1] || topNeeds[0] || "growth";
+  const secondaryNeed = relationshipNeeds[secondaryNeedKey] || relationshipNeeds.growth;
+  const needBreakdown = getNeedBreakdown(state.quiz.answers);
   const frictionSignals = getNeedSignals(topNeeds);
+  const strongestInsight = state.quiz.result.strongestInsight || getStrongestAnswerInsight(state.quiz.answers);
+  const contrastInsight = getContrastInsight(needBreakdown);
   const score = state.quiz.result.totalScore;
   const shareMessage = buildResultShareMessage(profile, primaryNeed);
   const shareUrl = buildWhatsappShareUrl(shareMessage);
   const rewardBadge = getRewardBadge(profile, score);
+  const maxScore = quizQuestions.length * 2;
 
   elements.resultSection.classList.remove("is-hidden");
   elements.resultCard.className = `result-card result-card--${profile.tone || "attention"}`;
@@ -581,12 +750,25 @@ function renderResultState() {
       <strong>Necessidade mais sensível agora</strong>
       <span>${primaryNeed.label}</span>
     </div>
+    <div class="result-card__metric">
+      <strong>Segunda camada que influencia o quadro</strong>
+      <span>${secondaryNeed.label}</span>
+    </div>
+    <div class="result-card__insight">
+      <strong>Leitura fina do que você marcou</strong>
+      <p>${strongestInsight}</p>
+      <p>${contrastInsight}</p>
+    </div>
+    <div class="result-card__insight">
+      <strong>O custo oculto desse padrão</strong>
+      <p>${getNeedCost(primaryNeedKey)}</p>
+    </div>
     <div class="result-card__alert">
       <strong>Se ninguém mexer nisso</strong>
       <p>${profile.consequence}</p>
     </div>
     <p>${profile.desire}</p>
-    <p>Seu diagnóstico somou <strong>${score} de ${quizQuestions.length * 2} pontos de atenção</strong>, o que mostra que essa fase merece menos improviso e mais intenção.</p>
+    <p>Seu diagnóstico somou <strong>${score} de ${maxScore} pontos de atenção</strong>, o que mostra que essa fase merece menos improviso e mais intenção.</p>
     <div class="result-card__actions">
       <a class="btn btn--primary" data-checkout-link href="#">Ouvir o audiobook agora</a>
       <a class="btn btn--secondary" data-whatsapp-link href="#">Tirar dúvidas no WhatsApp</a>
@@ -603,10 +785,33 @@ function renderResultState() {
       <strong>Como essa necessidade entra no relacionamento</strong>
       <p>${primaryNeed.summary}</p>
     </div>
+    <div class="result-side__block">
+      <strong>Mapa das 6 necessidades</strong>
+      <div class="need-score-list">
+        ${needBreakdown.map((need) => `
+          <div class="need-score">
+            <div class="need-score__top">
+              <span>${need.label}</span>
+              <strong>${need.score}/${need.maxScore}</strong>
+            </div>
+            <div class="need-score__bar" aria-hidden="true">
+              <span style="width: ${need.percent}%"></span>
+            </div>
+            <small>${need.levelLabel}</small>
+          </div>
+        `).join("")}
+      </div>
+    </div>
     <h3>Próximos passos simples</h3>
     <ul>
-      ${primaryNeed.actions.map((action) => `<li>${action}</li>`).join("")}
+      ${getPersonalizedActions(primaryNeedKey, secondaryNeedKey).map((action) => `<li>${action}</li>`).join("")}
     </ul>
+    <div class="result-side__block">
+      <strong>Plano de 7 dias</strong>
+      <ul>
+        ${getSevenDayPlan(primaryNeedKey, secondaryNeedKey).map((action) => `<li>${action}</li>`).join("")}
+      </ul>
+    </div>
     <div class="path-grid">
       <div class="path-card">
         <strong>Aprofundar</strong>
@@ -697,7 +902,7 @@ function getRewardBadge(profile, score) {
     return "Hora da virada antes do desgaste crescer";
   }
 
-  if (score >= 10) {
+  if (score >= 18) {
     return "Reconstrução necessária para sair do automático";
   }
 
@@ -709,25 +914,152 @@ function getResultProfile(score) {
 }
 
 function getPrimaryNeed(answers) {
-  const totals = buildNeedTotals(answers);
-  const orderedNeeds = Object.entries(totals).sort((a, b) => b[1] - a[1]);
-  return orderedNeeds[0]?.[0] || "love";
+  return getTopNeeds(answers, 1)[0] || "love";
 }
 
 function getTopNeeds(answers, limit = 2) {
-  const totals = buildNeedTotals(answers);
-
-  return Object.entries(totals)
-    .sort((a, b) => b[1] - a[1])
+  return getNeedBreakdown(answers)
     .slice(0, limit)
-    .map(([need]) => need);
+    .map((need) => need.key);
 }
 
 function buildNeedTotals(answers) {
-  return answers.reduce((accumulator, answer) => {
-    accumulator[answer.need] = (accumulator[answer.need] || 0) + answer.score;
+  const initialTotals = Object.keys(relationshipNeeds).reduce((accumulator, needKey) => {
+    accumulator[needKey] = 0;
     return accumulator;
   }, {});
+
+  return answers.reduce((accumulator, answer) => {
+    if (!answer?.need || !Object.prototype.hasOwnProperty.call(accumulator, answer.need)) {
+      return accumulator;
+    }
+
+    accumulator[answer.need] += answer.score || 0;
+    return accumulator;
+  }, initialTotals);
+}
+
+function getNeedBreakdown(answers) {
+  const totals = buildNeedTotals(answers);
+  const maxScores = buildNeedMaxScores();
+
+  return Object.keys(relationshipNeeds)
+    .map((needKey) => {
+      const score = totals[needKey] || 0;
+      const maxScore = maxScores[needKey] || 2;
+      const percent = Math.round((score / maxScore) * 100);
+      const level = getNeedLevel(percent);
+
+      return {
+        key: needKey,
+        label: relationshipNeeds[needKey].label,
+        score,
+        maxScore,
+        percent,
+        level,
+        levelLabel: getNeedLevelLabel(level)
+      };
+    })
+    .sort((a, b) => {
+      if (b.percent !== a.percent) {
+        return b.percent - a.percent;
+      }
+
+      return b.score - a.score;
+    });
+}
+
+function buildNeedMaxScores() {
+  return quizQuestions.reduce((accumulator, question) => {
+    accumulator[question.need] = (accumulator[question.need] || 0) + 2;
+    return accumulator;
+  }, {});
+}
+
+function getNeedLevel(percent) {
+  if (percent >= 75) {
+    return "critical";
+  }
+
+  if (percent >= 50) {
+    return "warning";
+  }
+
+  if (percent >= 25) {
+    return "attention";
+  }
+
+  return "stable";
+}
+
+function getNeedLevelLabel(level) {
+  const labels = {
+    stable: "base relativamente preservada",
+    attention: "ponto de atenção leve",
+    warning: "ponto sensível pedindo conversa",
+    critical: "área crítica no momento"
+  };
+
+  return labels[level] || labels.attention;
+}
+
+function getStrongestAnswerInsight(answers) {
+  const strongestAnswer = answers
+    .filter(Boolean)
+    .slice()
+    .sort((a, b) => {
+      if ((b.score || 0) !== (a.score || 0)) {
+        return (b.score || 0) - (a.score || 0);
+      }
+
+      return quizQuestions.findIndex((question) => question.id === b.questionId)
+        - quizQuestions.findIndex((question) => question.id === a.questionId);
+    })[0];
+
+  if (!strongestAnswer) {
+    return "A leitura ainda precisa das respostas para identificar um padrão dominante.";
+  }
+
+  return questionInsights[strongestAnswer.questionId]?.[strongestAnswer.score]
+    || "O ponto mais marcado mostra onde a conversa precisa começar com mais honestidade.";
+}
+
+function getContrastInsight(needBreakdown) {
+  const highest = needBreakdown[0];
+  const lowest = needBreakdown[needBreakdown.length - 1];
+
+  if (!highest || !lowest) {
+    return "Use o mapa como ponto de partida para uma conversa mais específica.";
+  }
+
+  if (highest.percent === 0) {
+    return "As respostas apontam uma base preservada. O melhor uso desse diagnóstico é prevenir desgaste antes que ele ganhe força.";
+  }
+
+  if (highest.percent - lowest.percent >= 50) {
+    return `O contraste entre ${highest.label} e ${lowest.label} mostra que o problema não está em tudo: existe uma área central puxando o desgaste.`;
+  }
+
+  return `Como várias áreas aparecem próximas, o foco não é procurar um culpado único; é criar um plano simples para reduzir tensão em ${highest.label} e ${needBreakdown[1]?.label || "conexão"}.`;
+}
+
+function getPersonalizedActions(primaryNeedKey, secondaryNeedKey) {
+  const primaryActions = relationshipNeeds[primaryNeedKey]?.actions || [];
+  const secondaryActions = relationshipNeeds[secondaryNeedKey]?.actions || [];
+  const actions = [...primaryActions, ...secondaryActions];
+
+  return [...new Set(actions)].slice(0, 4);
+}
+
+function getNeedCost(needKey) {
+  return needCostMap[needKey] || "O custo oculto do padrão é continuar tentando resolver sintomas sem tocar na necessidade que organiza o comportamento.";
+}
+
+function getSevenDayPlan(primaryNeedKey, secondaryNeedKey) {
+  const primaryPlan = needFocusPlan[primaryNeedKey] || [];
+  const secondaryPlan = needFocusPlan[secondaryNeedKey] || [];
+
+  return [...new Set([...primaryPlan, ...secondaryPlan])].slice(0, 4);
 }
 
 function getNeedSignals(needKeys) {

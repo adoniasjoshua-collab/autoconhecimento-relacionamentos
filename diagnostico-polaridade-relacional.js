@@ -191,6 +191,37 @@ const guidanceMap = {
   adjustment: "Sustente com mais consciência a combinação entre firmeza e entrega para não perder o que já está vivo."
 };
 
+const patternCostMap = {
+  control: "O preço do controle é que você até evita vulnerabilidade no curto prazo, mas também reduz entrega, leveza e admiração.",
+  passivity: "O preço da passividade é trocar paz aparente por perda de voz, acúmulo emocional e dependência da reação do outro.",
+  oscillation: "O preço da oscilação é criar imprevisibilidade: ora você puxa, ora some, e o vínculo perde referência.",
+  lowPolarity: "O preço da baixa polaridade é a relação virar convivência funcional, com pouco contraste, desejo e direção.",
+  adjustment: "O preço de não ajustar agora é deixar pequenos desalinhamentos virarem identidade do relacionamento."
+};
+
+const polarityActionPlan = {
+  control: [
+    "Antes de conduzir a conversa, diga primeiro o que você está sentindo sem transformar isso em ordem.",
+    "Escolha uma situação para praticar escuta sem corrigir, explicar ou assumir o comando nos primeiros minutos."
+  ],
+  passivity: [
+    "Defina um limite pequeno e comunique sem pedir desculpa por existir.",
+    "Troque espera silenciosa por um pedido claro, específico e possível de ser atendido."
+  ],
+  oscillation: [
+    "Quando perceber impulso de dominar ou sumir, faça uma pausa curta antes de responder.",
+    "Use uma frase de regulação: 'eu quero conversar, mas preciso voltar para o centro antes'."
+  ],
+  lowPolarity: [
+    "Crie um ritual simples de presença com intenção: olhar, toque, convite ou conversa sem tela.",
+    "Reintroduza direção: combinem uma ação concreta para a relação nesta semana."
+  ],
+  adjustment: [
+    "Escolha um ponto fino para sustentar por 7 dias: presença, limite, iniciativa ou receptividade.",
+    "Observe em qual situação sua energia perde equilíbrio e registre o gatilho antes de agir."
+  ]
+};
+
 const state = {
   started: false,
   currentIndex: 0,
@@ -244,6 +275,7 @@ function bindElements() {
   elements.resultPolarity = document.getElementById("resultPolarity");
   elements.resultAttention = document.getElementById("resultAttention");
   elements.resultGuidance = document.getElementById("resultGuidance");
+  elements.resultGrid = document.querySelector(".result__grid");
   elements.resultHeading = document.getElementById("resultHeading");
   elements.resultLead = document.getElementById("resultLead");
 }
@@ -399,7 +431,7 @@ function calculateDiagnosisResult() {
 
   const energyDifference = masculineScore - feminineScore;
   const balanceGap = Math.abs(energyDifference);
-  const rawPolarityScore = polarityBaseScore + (12 - imbalanceScore);
+  const rawPolarityScore = Math.max(0, Math.min(18, polarityBaseScore + (12 - imbalanceScore)));
 
   const energy = getEnergyType(energyDifference, imbalanceScore);
   const balance = getBalanceLevel(balanceGap);
@@ -419,7 +451,22 @@ function calculateDiagnosisResult() {
     balance,
     polarity,
     attention,
-    profile
+    profile,
+    scores: {
+      masculine: masculineScore,
+      feminine: feminineScore,
+      imbalance: imbalanceScore,
+      polarity: rawPolarityScore,
+      balanceGap
+    },
+    axisBreakdown: getAxisBreakdown({
+      masculineScore,
+      feminineScore,
+      imbalanceScore,
+      rawPolarityScore
+    }),
+    cost: patternCostMap[attention],
+    plan: polarityActionPlan[attention] || polarityActionPlan.adjustment
   };
 }
 
@@ -454,6 +501,38 @@ function getProfileByEnergy(energy) {
   return resultProfiles[energy] || resultProfiles.mixed;
 }
 
+function getAxisBreakdown(scores) {
+  return [
+    {
+      label: "Condução",
+      score: scores.masculineScore,
+      max: 12,
+      helper: "iniciativa, decisão e direção"
+    },
+    {
+      label: "Entrega",
+      score: scores.feminineScore,
+      max: 12,
+      helper: "receptividade, confiança e sensibilidade"
+    },
+    {
+      label: "Oscilação",
+      score: scores.imbalanceScore,
+      max: 15,
+      helper: "controle, carência, defesa ou fuga"
+    },
+    {
+      label: "Polaridade viva",
+      score: scores.rawPolarityScore,
+      max: 18,
+      helper: "contraste, presença e troca"
+    }
+  ].map((axis) => ({
+    ...axis,
+    percent: Math.round((axis.score / axis.max) * 100)
+  }));
+}
+
 function renderResult(result) {
   const energyLabels = {
     masculine: "Predominância masculina",
@@ -472,7 +551,44 @@ function renderResult(result) {
   elements.resultHeading.textContent = `Seu resultado aponta ${energyLabels[result.energy].toLowerCase()} no momento atual.`;
   elements.resultLead.textContent =
     `Hoje a leitura sugere ${result.polarity.toLowerCase()} e ${result.balance.toLowerCase()} entre firmeza, entrega e presença relacional.`;
+  renderResultDepth(result);
   elements.microStatus.textContent = "Leitura concluída. Seu resultado gratuito já está liberado.";
+}
+
+function renderResultDepth(result) {
+  elements.resultGrid.querySelectorAll(".result-dynamic").forEach((item) => item.remove());
+
+  const axisCards = result.axisBreakdown
+    .map((axis) => `
+      <div class="result-meter">
+        <div class="result-meter__top">
+          <span>${axis.label}</span>
+          <strong>${axis.score}/${axis.max}</strong>
+        </div>
+        <div class="result-meter__bar" aria-hidden="true">
+          <span style="width: ${axis.percent}%"></span>
+        </div>
+        <small>${axis.helper}</small>
+      </div>
+    `)
+    .join("");
+
+  elements.resultGrid.insertAdjacentHTML("beforeend", `
+    <article class="card card--result card--wide result-dynamic">
+      <span class="result__label">Mapa de energia</span>
+      <div class="result-meter-list">${axisCards}</div>
+    </article>
+    <article class="card card--result result-dynamic">
+      <span class="result__label">Custo oculto</span>
+      <p>${result.cost}</p>
+    </article>
+    <article class="card card--result result-dynamic">
+      <span class="result__label">Plano de ajuste</span>
+      <ul class="result-plan">
+        ${result.plan.map((item) => `<li>${item}</li>`).join("")}
+      </ul>
+    </article>
+  `);
 }
 
 function updateHeaderContent(stageId) {
